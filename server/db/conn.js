@@ -1,12 +1,22 @@
 const { MongoClient } = require("mongodb");
-const Db = process.env.ATLAS_URI;
-const client = new MongoClient(Db);
+const url = process.env.ATLAS_URI;
+const client = new MongoClient(url);
 
-const run = async () => {
-	try {
-		await client.connect();
-		// database and collection code goes here
-		const db = client.db("employees");
-		const collection = db.collection("records");
-	} catch (error) {}
+const dbName = "employees";
+
+const main = async () => {
+	await client.connect();
+	console.log("Connected to the Database");
+	const db = client.db(dbName);
+	const collection = db.collection("records");
 };
+
+const findAll = async (req, res) => {
+	await client.connect();
+	const db = client.db(dbName);
+	const collection = db.collection("records");
+	const findResults = await collection.find({}).toArray();
+	console.log(findResults);
+};
+
+module.exports = { main, findAll };
